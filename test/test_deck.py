@@ -2,48 +2,48 @@ from src.deck import *
 import emoji
 
 DECK_SIZE = 108
-
+CARD_COUNT = 1
 class TestDeck:
     def test_one_maki(self):
-        maki = OneMaki()
-        assert maki.name == 'one_maki'
+        maki = OneMaki(CARD_COUNT)
+        assert maki.name == f'one_maki_{CARD_COUNT}'
         assert maki.face == f'1{MAKI_CLDR}'
         assert maki.value == 1
 
     def test_tempura(self):
-        tempura = Tempura()
+        tempura = Tempura(CARD_COUNT)
         assert tempura.face == TEMPURA_CLDR
 
     def test_sashimi(self):
-        sashimi = Sashimi()
+        sashimi = Sashimi(CARD_COUNT)
         assert sashimi.face == SASHIMI_CLDR
 
     def test_dumpling(self):
-        dumpling = Dumpling()
+        dumpling = Dumpling(CARD_COUNT)
         assert dumpling.face == DUMPLING_CLDR
 
     def test_nigiri_squid(self):
-        nigiri_squid = NigiriSquid()
+        nigiri_squid = NigiriSquid(CARD_COUNT)
         assert nigiri_squid.face == NIGIRI_SQUID_CLDR
 
     def test_nigiri_salmon(self):
-        nigiri_salmon = NigiriSalmon()
+        nigiri_salmon = NigiriSalmon(CARD_COUNT)
         assert nigiri_salmon.face == NIGIRI_SALMON_CLDR
 
     def test_nigiri_egg(self):
-        nigiri_egg = NigiriEgg()
+        nigiri_egg = NigiriEgg(CARD_COUNT)
         assert nigiri_egg.face == NIGIRI_EGG_CLDR
 
     def test_wasabi(self):
-        wasabi = Wasabi()
+        wasabi = Wasabi(CARD_COUNT)
         assert wasabi.face == WASABI_CLDR
 
     def test_chopsticks(self):
-        chopsticks = Chopsticks()
+        chopsticks = Chopsticks(CARD_COUNT)
         assert chopsticks.face == CHOPSTICKS_CLDR
     
     def test_pudding(self):
-        pudding = Pudding()
+        pudding = Pudding(CARD_COUNT)
         assert pudding.face == PUDDING_CLDR
 
     def test_init_deck(self):
