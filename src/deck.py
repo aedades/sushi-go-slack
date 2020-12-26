@@ -230,3 +230,9 @@ class Pudding(Card):
     def __init__(self, card_num):
         card_type = 'pudding'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
+
+
+def init_deck():
+    deck = Deck()
+    deck.shuffle()
+    return deck

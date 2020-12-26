@@ -3,6 +3,7 @@ import emoji
 
 DECK_SIZE = 108
 CARD_COUNT = 1
+
 class TestDeck:
     def test_one_maki(self):
         maki = OneMaki(CARD_COUNT)

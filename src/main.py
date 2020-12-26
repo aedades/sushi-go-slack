@@ -2,9 +2,6 @@ import os
 import json
 import logging
 import boto3
-from deck import *
-from dynamodb_helpers import *
-from utils import *
 from flask import Flask, request, Response
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -20,10 +17,16 @@ AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_REGION = os.environ.get('AWS_DEFAULT_REGION', 'us-west-2')
 
-app = Flask(__name__)
-
 HANDS_TABLE_NAME = 'hands-sushi-go-dev'
 USERS_TABLE_NAME = 'users-sushi-go-dev'
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'dev')
+
+if ENVIRONMENT == 'dev':
+    MIN_NUM_PLAYERS = 1
+else:
+    MIN_NUM_PLAYERS = 2
+
+app = Flask(__name__)
 
 dynamodb = boto3.resource('dynamodb')
 dynamodb_hands_table = dynamodb.Table(HANDS_TABLE_NAME)
@@ -35,8 +38,8 @@ USER_ID = 'U01H3KAPB71'
 client = WebClient(token=SLACK_BOT_TOKEN)
 
 
-def start_game(channel, username):
-    # TODO: Check if game already in progress (channel in table)
+def start_game(channel_id, username):
+    # TODO: Check if game already in progress (channel_id in table)
     attachments = [{
         'text': f'<@{username}> wants to start a game of Sushi Go! :sushi:',
         'callback_id': 'add_player',
@@ -49,26 +52,25 @@ def start_game(channel, username):
             }
         ]
     }]
-    post_slack_message(attachments, channel, None)
+    post_slack_message(attachments, channel_id, None)
     
 
-def add_player(channel, user_id):
-    # TODO: Check if game already in progress (channel in table)
+def add_player(channel_id, user_id):
+    # TODO: Check if game already in progress (channel_id in table)
     item = {
         'user_id': user_id,
         'deck': None,   # value 'true'
-        'channel_id': channel
+        'channel_id': channel_id
     }
     update_user_item(dynamodb_users_table, item)
     text = f'<@{user_id}> joined the game :wave:'
-    post_slack_message(None, channel, text)
+    post_slack_message(None, channel_id, text)
 
-    # TODO: > 2
-    if get_num_players() > 1:
-        prompt_start_game(channel, user_id)
+    if get_num_players() > MIN_NUM_PLAYERS:
+        prompt_start_game(channel_id, user_id)
 
 
-def prompt_start_game(channel, user_id):
+def prompt_start_game(channel_id, user_id):
     attachments = [{
         'text': f'Start the game with {get_num_players()} players?',
         'callback_id': 'prompt_start_game',
@@ -81,23 +83,25 @@ def prompt_start_game(channel, user_id):
             }
         ]
     }]
-    post_slack_message(attachments, channel, None)
+    post_slack_message(attachments, channel_id, None)
 
 
 def get_num_players():
     # TODO: Check number of players
-    return 2
+    return 1
 
 
-def init_deck():
-    deck = Deck()
-    deck.shuffle()
-    return deck
+def get_players(channel_id):
+    # Get all players in current channel_id
+    item = get_user_item(dynamodb_users_table, item)
 
 
-def deal_hands(deck):
+def deal_hands(channel_id, deck):
     hands = deck.deal_hands(get_num_players())
-    # TODO: Assign hands to players
+    # TODO: Assign hands to unique players
+    # get players in current game
+    user_ids = get_players(channel_id)
+    # if just 1 player, assign all hands to that player
     for hand in hands:
         prompt_player_pick(hand)
         print(hand)
@@ -150,7 +154,7 @@ def command():
     #if not request.form.get('token') == SLACK_WEBHOOK_SECRET:
     #    return '', 403
 
-    channel_name = request.form.get('channel_name')
+    channel_id_name = request.form.get('channel_id_name')
     username = request.form.get('user_name')
     command = request.form.get('command')
     text = request.form.get('text')
@@ -160,7 +164,7 @@ def command():
         payload = parse_payload(request)
         callback_id = payload['callback_id']
         user_id = payload['user']['id']
-        channel_id = payload['channel']['id']
+        channel_id = payload['channel_id']['id']
     except:
         pass
 
@@ -168,19 +172,19 @@ def command():
 
     if command:
         if text == 'start':
-            start_game(channel_name, username)
+            start_game(channel_id_name, username)
     elif callback_id:
         if callback_id == 'add_player':
             add_player(channel_id, user_id)
         elif callback_id == 'prompt_start_game':
             deck = init_deck()
-            hands = deal_hands(deck)
+            hands = deal_hands(channel_id, deck)
         elif callback_id == 'choose_card':
             pass
             # TODO: Remove card from hand & add to player's deck
     else:
         text = 'Hello from the app! :sushi:'
-        post_slack_message(None, channel, text)
+        post_slack_message(None, channel_id, text)
     return Response(), 200
 
 
@@ -191,9 +195,9 @@ def hello_world():
 
 
 @app.route('/test/dynamodb-update')
-def test_dynamodb_update():
+def test_dynamodb_update(channel_id):
     deck = init_deck()
-    hands = deal_hands(deck)
+    hands = deal_hands(channel_id, deck)
     item = {
         'user_id': 'amanda',
         'deck': pickle_hand(hands[0]),
