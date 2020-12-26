@@ -1,11 +1,4 @@
 def update_user_item(table, item):
-    '''
-    item = {
-        'user_id': 'amanda',
-        'deck': 'deck',
-        'channel_id': 'development'
-    }
-    '''
     kwargs= {
         'Key': {
             'user_id': item['user_id']
