@@ -35,32 +35,6 @@ USER_ID = 'U01H3KAPB71'
 client = WebClient(token=SLACK_BOT_TOKEN)
 
 
-def parse_payload(payload):
-    payload = json.loads(request.form.get('payload'))
-    print(payload)
-    print(payload.keys())
-    print(payload['actions'])
-    print(payload['user']['id'])
-    print(payload['callback_id'])
-    return payload
-
-
-def post_slack_message(attachments, channel, text):
-    kwargs = {
-        'channel': channel
-    }
-    if attachments != None:
-        kwargs['attachments'] = attachments
-    if text != None:
-        kwargs['text'] = text
-    try:
-        response = client.chat_postMessage(**kwargs)
-    except SlackApiError as e:
-        # You will get a SlackApiError if "ok" is False
-        print(e)
-        assert e.response["error"]    # str like 'invalid_auth', 'channel_not_found'
-
-
 def start_game(channel, username):
     # TODO: Check if game already in progress (channel in table)
     attachments = [{

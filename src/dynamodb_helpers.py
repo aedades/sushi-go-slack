@@ -12,6 +12,16 @@ def update_user_item(table, item):
     _update_item(table, kwargs)
 
 
+def parse_payload(payload):
+    payload = json.loads(request.form.get('payload'))
+    print(payload)
+    print(payload.keys())
+    print(payload['actions'])
+    print(payload['user']['id'])
+    print(payload['callback_id'])
+    return payload
+
+
 def _update_item(table, kwargs):
     table.update_item(**kwargs)
 
