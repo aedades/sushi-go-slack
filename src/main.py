@@ -1,11 +1,13 @@
 import os
 import json
 import logging
+import boto3
 from deck import *
+from dynamodb_helpers import *
+from utils import *
 from flask import Flask, request, Response
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-from flask_dynamo import Dynamo
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,21 +22,12 @@ AWS_REGION = os.environ.get('AWS_DEFAULT_REGION', 'us-west-2')
 
 app = Flask(__name__)
 
-app.config['DYNAMO_TABLES'] = [
-    dict(
-        TableName='users',
-        KeySchema=[dict(AttributeName='username', KeyType='HASH')],
-        AttributeDefinitions=[dict(AttributeName='username', AttributeType='S')],
-        ProvisionedThroughput=dict(ReadCapacityUnits=5, WriteCapacityUnits=5)
-    ), dict(
-        TableName='groups',
-        KeySchema=[dict(AttributeName='name', KeyType='HASH')],
-        AttributeDefinitions=[dict(AttributeName='name', AttributeType='S')],
-        ProvisionedThroughput=dict(ReadCapacityUnits=5, WriteCapacityUnits=5)
-    )
-]
+HANDS_TABLE_NAME = 'hands-sushi-go-dev'
+USERS_TABLE_NAME = 'users-sushi-go-dev'
 
-dynamo = Dynamo(app)
+dynamodb = boto3.resource('dynamodb')
+dynamodb_hands_table = dynamodb.Table(HANDS_TABLE_NAME)
+dynamodb_users_table = dynamodb.Table(USERS_TABLE_NAME)
 
 # Temp hardcoded values
 USER_ID = 'U01H3KAPB71'
@@ -69,6 +62,7 @@ def post_slack_message(attachments, channel, text):
 
 
 def start_game(channel, username):
+    # TODO: Check if game already in progress (channel in table)
     attachments = [{
         'text': f'<@{username}> wants to start a game of Sushi Go! :sushi:',
         'callback_id': 'add_player',
@@ -85,10 +79,17 @@ def start_game(channel, username):
     
 
 def add_player(channel, user_id):
-    print(f'TODO: Add user_id:{user_id} to game')
+    # TODO: Check if game already in progress (channel in table)
+    item = {
+        'user_id': user_id,
+        'deck': None,   # value 'true'
+        'channel_id': channel
+    }
+    update_user_item(dynamodb_users_table, item)
     text = f'<@{user_id}> joined the game :wave:'
     post_slack_message(None, channel, text)
 
+    # TODO: > 2
     if get_num_players() > 1:
         prompt_start_game(channel, user_id)
 
@@ -122,7 +123,7 @@ def init_deck():
 
 def deal_hands(deck):
     hands = deck.deal_hands(get_num_players())
-    # TODO: Save hand in DB, 
+    # TODO: Assign hands to players
     for hand in hands:
         prompt_player_pick(hand)
         print(hand)
@@ -138,9 +139,9 @@ def prompt_player_pick(hand):
     text = 'Choose a card to keep:'
     post_slack_message(None, player_user_id, text)
 
-    for card in hand.cards:
+    for card_name, card in hand.cards.items():
         action = {
-            'name': card.name,
+            'name': card_name,
             'text': card.face,
             'type': 'button',
             'value': card.name
@@ -198,10 +199,8 @@ def command():
         if callback_id == 'add_player':
             add_player(channel_id, user_id)
         elif callback_id == 'prompt_start_game':
-            # TODO: Save player order for passing hands around
             deck = init_deck()
             hands = deal_hands(deck)
-            # TODO: Assign hands to players
         elif callback_id == 'choose_card':
             pass
             # TODO: Remove card from hand & add to player's deck
@@ -214,7 +213,30 @@ def command():
 @app.route('/')
 def hello_world():
     return 'Hello world!'
+    # TODO: Return how to play
 
+
+@app.route('/test/dynamodb-update')
+def test_dynamodb_update():
+    deck = init_deck()
+    hands = deal_hands(deck)
+    item = {
+        'user_id': 'amanda',
+        'deck': pickle_hand(hands[0]),
+        'channel_id': 'development'
+    }
+    update_user_item(dynamodb_users_table, item)
+    return Response(), 200
+
+
+@app.route('/test/dynamodb-read')
+def test_dynamodb_read():
+    item = {
+        'user_id': 'amanda'
+    }
+    item = get_user_item(dynamodb_users_table, item)
+    unpickled_deck = unpickle_hand(item['deck'])
+    return Response(), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,4 +1,6 @@
+import emoji
 import random
+import pickle
 
 MAKI_CLDR = ':radio_button:'
 TEMPURA_CLDR = ':fried_shrimp:'
@@ -121,10 +123,13 @@ class Deck:
 
 class Hand:
     def __init__(self):
-        self.cards = []
+        self.cards = {}
 
     def add_card(self, card):
-        self.cards.append(card)
+        self.cards[card.name] = card
+
+    def remove_card(self, card_name):
+        return self.cards.pop(card_name)
 
     def __len__(self):
         return len(self.cards)
@@ -132,8 +137,8 @@ class Hand:
     def __str__(self):
         column = 0
         string = ''
-        for x in range(len(self.cards)):
-            string += f'{self.cards[x].get_face()} '
+        for card in self.cards.values():
+            string += f'{card.get_face()} '
             column += 1
             if column == 5:
                 string+= '\n'
@@ -144,6 +149,9 @@ class Card:
     def __init__(self, name, card_num, face_cldr):
         self.name = f'{name}_{card_num}'
         self.face = face_cldr
+
+    def get_face(self):
+         return emoji.emojize(self.face)
 
 
 class OneMaki(Card):

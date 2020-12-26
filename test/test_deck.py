@@ -69,3 +69,14 @@ class TestDeck:
         assert len(hands[0]) == 10
         assert len(hands[1]) == 10
         assert hands[0] != hands
+
+    def test_deck_remove_card(self):
+        deck = Deck()
+        hands = deck.deal_hands(2)
+        hand = hands[0]
+        starting_hand_size = len(hand)
+        card_to_remove = list(hand.cards.keys())[0]
+        removed_card = hand.remove_card(card_to_remove)
+        assert removed_card.name == card_to_remove
+        assert not card_to_remove in hand.cards.keys()
+        assert len(hand) == starting_hand_size - 1
