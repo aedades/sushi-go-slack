@@ -2,6 +2,35 @@ import json
 from boto3.dynamodb.conditions import Key, Attr
 from flask import request
 
+# Old code in main
+# Refactor & implement Store interface
+'''
+dynamodb = boto3.resource('dynamodb')
+dynamodb_hands_table = dynamodb.Table(HANDS_TABLE_NAME)
+dynamodb_users_table = dynamodb.Table(USERS_TABLE_NAME)
+
+item = {
+        'user_id': user_id,
+        'deck': None,   # value 'true'
+        'channel_id': channel_id
+    }
+
+update_user_item(dynamodb_users_table, item)
+
+user_ids = scan_players(dynamodb_users_table, channel_id)
+
+item = {
+        'hand_id': hand_id,
+        'cur_user_id': user_id,
+        'hand': hand.pickle_hand(),
+        'channel_id': channel_id,
+        'chose_card': False
+    }
+
+update_hand_item(dynamodb_hands_table, item)
+'''
+
+
 def parse_payload(payload):
     payload = json.loads(request.form.get('payload'))
     print(payload)

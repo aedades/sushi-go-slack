@@ -1,6 +1,6 @@
 import emoji
-import random
 import pickle
+import random
 
 MAKI_CLDR = ':radio_button:'
 TEMPURA_CLDR = ':fried_shrimp:'
@@ -22,15 +22,15 @@ HAND_SIZE = {
 }
 
 CARD_INFO = {
-    'one_maki': {
+    'maki_one': {
         'CLDR': f'1{MAKI_CLDR}',
         'value': 1
     },
-    'two_maki': {
+    'maki_two': {
         'CLDR': f'2{MAKI_CLDR}',
         'value': 2
     },
-    'three_maki': {
+    'maki_three': {
         'CLDR': f'3{MAKI_CLDR}',
         'value': 3
     },
@@ -79,9 +79,9 @@ CARD_INFO = {
 class Deck:
     def __init__(self):
         self.cards = []
-        self._add_cards(TwoMaki, 12)
-        self._add_cards(ThreeMaki, 8)
-        self._add_cards(OneMaki, 6)
+        self._add_cards(MakiTwo, 12)
+        self._add_cards(MakiThree, 8)
+        self._add_cards(MakiOne, 6)
         self._add_cards(Tempura, CARD_INFO['tempura']['count'])
         self._add_cards(Sashimi, CARD_INFO['sashimi']['count'])
         self._add_cards(Dumpling, CARD_INFO['dumpling']['count'])
@@ -135,6 +135,12 @@ class Hand:
     def remove_card(self, card_name):
         return self.cards.pop(card_name)
 
+    def pickle_hand(hand):
+        return pickle.dumps(hand, 0).decode()
+
+    def unpickle_hand(hand):
+        return pickle.loads(hand.encode())
+
     def __len__(self):
         return len(self.cards)
 
@@ -142,7 +148,7 @@ class Hand:
         column = 0
         string = ''
         for card in self.cards.values():
-            string += f'{card.get_face()} '
+            string += f'{card.Get_face()} '
             column += 1
             if column == 5:
                 string+= '\n'
@@ -154,40 +160,13 @@ class Card:
         self.name = f'{name}_{card_num}'
         self.face = face_cldr
 
-    def get_face(self):
+    def Get_face(self):
          return emoji.emojize(self.face)
 
 
-class OneMaki(Card):
+class Chopsticks(Card):
     def __init__(self, card_num):
-        card_type = 'one_maki'
-        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
-        self.value = CARD_INFO[card_type]['value']
-
-
-class TwoMaki(Card):
-    def __init__(self, card_num):
-        card_type = 'two_maki'
-        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
-        self.value = CARD_INFO[card_type]['value']
-
-
-class ThreeMaki(Card):
-    def __init__(self, card_num):
-        card_type = 'three_maki'
-        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
-        self.value = CARD_INFO[card_type]['value']
-
-
-class Tempura(Card):
-    def __init__(self, card_num):
-        card_type = 'tempura'
-        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
-
-
-class Sashimi(Card):
-    def __init__(self, card_num):
-        card_type = 'sashimi'
+        card_type = 'chopsticks'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
 
 
@@ -196,19 +175,25 @@ class Dumpling(Card):
         card_type = 'dumpling'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
 
-
-class NigiriSquid(Card):
+class MakiOne(Card):
     def __init__(self, card_num):
-        card_type = 'nigiri_squid'
+        card_type = 'maki_one'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
-        self.value = CARD_INFO['nigiri_squid']['value']
+        self.value = CARD_INFO[card_type]['value']
 
 
-class NigiriSalmon(Card):
+class MakiTwo(Card):
     def __init__(self, card_num):
-        card_type = 'nigiri_salmon'
+        card_type = 'maki_two'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
-        self.value = CARD_INFO['nigiri_salmon']['value']
+        self.value = CARD_INFO[card_type]['value']
+
+
+class MakiThree(Card):
+    def __init__(self, card_num):
+        card_type = 'maki_three'
+        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
+        self.value = CARD_INFO[card_type]['value']
 
 
 class NigiriEgg(Card):
@@ -218,21 +203,41 @@ class NigiriEgg(Card):
         self.value = CARD_INFO['nigiri_egg']['value']
 
 
-class Wasabi(Card):
+class NigiriSalmon(Card):
     def __init__(self, card_num):
-        card_type = 'wasabi'
+        card_type = 'nigiri_salmon'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
+        self.value = CARD_INFO['nigiri_salmon']['value']
 
 
-class Chopsticks(Card):
+class NigiriSquid(Card):
     def __init__(self, card_num):
-        card_type = 'chopsticks'
+        card_type = 'nigiri_squid'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
+        self.value = CARD_INFO['nigiri_squid']['value']
 
 
 class Pudding(Card):
     def __init__(self, card_num):
         card_type = 'pudding'
+        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
+
+
+class Sashimi(Card):
+    def __init__(self, card_num):
+        card_type = 'sashimi'
+        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
+
+
+class Tempura(Card):
+    def __init__(self, card_num):
+        card_type = 'tempura'
+        super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
+
+
+class Wasabi(Card):
+    def __init__(self, card_num):
+        card_type = 'wasabi'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
 
 

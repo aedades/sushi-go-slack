@@ -1,9 +1,10 @@
 import os
 import logging
 import boto3
-from deck import *
-from dynamodb_helpers import *
-from utils import *
+from sushigo.deck import *
+from store.store import *
+from store.memory import *
+from slack_client.message import *
 from flask import Flask, request, Response
 
 logging.basicConfig(level=logging.INFO)
@@ -28,9 +29,13 @@ else:
 
 app = Flask(__name__)
 
-dynamodb = boto3.resource('dynamodb')
-dynamodb_hands_table = dynamodb.Table(HANDS_TABLE_NAME)
-dynamodb_users_table = dynamodb.Table(USERS_TABLE_NAME)
+store_type = os.environ.get('STORE_TYPE', 'memory')
+
+if store_type == 'memory':
+    store = Memory()
+# Fallback to memory store
+else:
+    store = Memory()
 
 # Temp hardcoded values
 USER_ID = 'U01H3KAPB71'
@@ -60,12 +65,8 @@ def start_game(channel_id, username):
 
 def add_player(channel_id, user_id):
     # TODO: Check if game already in progress (channel_id in table)
-    item = {
-        'user_id': user_id,
-        'deck': None,   # value 'true'
-        'channel_id': channel_id
-    }
-    update_user_item(dynamodb_users_table, item)
+    user_info = UserInfo(None, channel_id)
+    store.update_user(user_id, user_info)
     text = f'<@{user_id}> joined the game :wave:'
     post_slack_message(client, None, channel_id, text)
 
@@ -98,7 +99,7 @@ def deal_hands(channel_id, deck):
     hands = deck.deal_hands(get_num_players())
     # TODO: Assign hands to unique players
     # get players in current game
-    user_ids = scan_players(dynamodb_users_table, channel_id)
+    user_ids = store.get_users()
     hand_id = 1
     user_id = user_ids[0]
     for hand in hands:
@@ -108,14 +109,8 @@ def deal_hands(channel_id, deck):
         else:
             user_id = user_ids.pop()
 
-        item = {
-            'hand_id': hand_id,
-            'cur_user_id': user_id,
-            'hand': pickle_hand(hand_id),
-            'channel_id': channel_id,
-            'chose_card': False
-        }
-        update_hand_item(dynamodb_hands_table, item)
+        hand_info = HandInfo(None, user_id, hand.pickle_hand(), channel_id, False)
+        store.update_hand(hand_id, hand_info)
         prompt_player_pick(hand)
         hand_id += 1
         print(hand)
@@ -207,37 +202,6 @@ def hello_world():
     return 'Hello world!'
     # TODO: Return how to play
 
-'''
-@app.route('/test/dynamodb_update')
-def test_dynamodb_update():
-    channel_id = CHANNEL_ID
-    deck = init_deck()
-    hands = deal_hands(channel_id, deck)
-    item = {
-        'user_id': 'amanda',
-        'deck': pickle_hand(hands[0]),
-        'channel_id': 'development'
-    }
-    update_user_item(dynamodb_users_table, item)
-    return Response(), 200
-
-
-@app.route('/test/dynamodb_read')
-def test_dynamodb_read():
-    item = {
-        'user_id': 'amanda'
-    }
-    item = get_user_item(dynamodb_users_table, item)
-    unpickled_deck = unpickle_hand(item['deck'])
-    return Response(), 200
-
-
-@app.route('/test/dynamodb_deal')
-def test_deal():
-    players = scan_players(dynamodb_users_table, CHANNEL_ID)
-    print('players: ', players)
-    return Response(), 200
-'''
 
 if __name__ == '__main__':
     app.run(debug=True)

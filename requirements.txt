@@ -2,3 +2,4 @@ slack_sdk
 flask
 pytest
 boto3
+emoji

@@ -2,8 +2,7 @@
 
 ## Bolt tutorial
 
-
-https://api.slack.com/start/building/bolt-python
+<https://api.slack.com/start/building/bolt-python>
 
 Set up:
 
@@ -33,3 +32,24 @@ ngrok http 3000
 ```
 
 Set [event subscriptions request URL](https://api.slack.com/apps/A01HJTN6TDZ/event-subscriptions?) to `ngrok` endpoint (`/slack/events`).  For example, `https://9ea2-73-140-230-25.ngrok.io/slack/events`.
+
+## Design
+
+Classes:
+
+- Deck
+- Hand
+- Card
+- Card types:
+  - Chopsticks
+  - Dumpling
+  - MakiOne
+  - MakiTwo
+  - MakiThree
+  - Nigiri Egg
+  - NigiriSalmon
+  - NigiriSquid
+  - Pudding
+  - Sashimi
+  - Tempura
+  - Wasabi
