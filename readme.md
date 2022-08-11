@@ -31,14 +31,12 @@ ngrok http 3000
 ngrok http 3000
 ```
 
-Set [event subscriptions request URL](https://api.slack.com/apps/A01HJTN6TDZ/event-subscriptions?) to `ngrok` endpoint (`/slack/events`).  For example, `https://9ea2-73-140-230-25.ngrok.io/slack/events`.
+Set the app's [event subscriptions request URL](https://api.slack.com/apps/A01HJTN6TDZ/event-subscriptions?) and [interactivity request URL]() to the `ngrok` endpoint (`/slack/events` and `/`, respectively).  For example, `https://9ea2-73-140-230-25.ngrok.io/slack/events`.
 
 ## Design
 
 Classes:
 
-- Deck
-- Hand
 - Card
 - Card types:
   - Chopsticks
@@ -53,3 +51,6 @@ Classes:
   - Sashimi
   - Tempura
   - Wasabi
+- Deck
+- Hand
+- User

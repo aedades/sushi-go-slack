@@ -1,48 +1,10 @@
 import os
-import logging
 import boto3
+from config import *
 from sushigo.deck import *
-from store.store import *
-from store.memory import *
-from slack_client.message import *
 from flask import Flask, request, Response
 
-logging.basicConfig(level=logging.INFO)
-
-SLACK_WEBHOOK_SECRET = os.environ.get('SLACK_WEBHOOK_SECRET')
-# https://api.slack.com/apps/A01HJTN6TDZ/oauth
-SLACK_BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
-SLACK_SIGNING_SECRET = os.environ.get('SLACK_SIGNING_SECRET')
-
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_REGION = os.environ.get('AWS_DEFAULT_REGION', 'us-west-2')
-
-HANDS_TABLE_NAME = 'hands-sushi-go-dev'
-USERS_TABLE_NAME = 'users-sushi-go-dev'
-ENVIRONMENT = os.environ.get('ENVIRONMENT', 'dev')
-
-if ENVIRONMENT == 'dev':
-    MIN_NUM_PLAYERS = 1
-else:
-    MIN_NUM_PLAYERS = 2
-
-app = Flask(__name__)
-
-store_type = os.environ.get('STORE_TYPE', 'memory')
-
-if store_type == 'memory':
-    store = Memory()
-# Fallback to memory store
-else:
-    store = Memory()
-
-# Temp hardcoded values
-USER_ID = 'U01H3KAPB71'
-CHANNEL_ID = 'C01HFA41AAZ'
-
-client = WebClient(token=SLACK_BOT_TOKEN)
-
+flask_app = Flask(__name__)
 
 def start_game(channel_id, username):
     # TODO: Check if game already in progress (channel_id in table)
@@ -60,7 +22,7 @@ def start_game(channel_id, username):
     }]
     print(attachments)
     print(channel_id)
-    post_slack_message(client, attachments, channel_id, None)
+    # post_slack_message(client, attachments, channel_id, None)
     
 
 def add_player(channel_id, user_id):
@@ -68,7 +30,7 @@ def add_player(channel_id, user_id):
     user_info = UserInfo(None, channel_id)
     store.update_user(user_id, user_info)
     text = f'<@{user_id}> joined the game :wave:'
-    post_slack_message(client, None, channel_id, text)
+    # post_slack_message(client, None, channel_id, text)
 
     if get_num_players() >= MIN_NUM_PLAYERS:
         prompt_start_game(channel_id, user_id)
@@ -87,7 +49,7 @@ def prompt_start_game(channel_id, user_id):
             }
         ]
     }]
-    post_slack_message(client, attachments, channel_id, None)
+    # post_slack_message(client, attachments, channel_id, None)
 
 
 def get_num_players():
@@ -123,7 +85,7 @@ def prompt_player_pick(hand):
     actions = []
 
     text = 'Choose a card to keep:'
-    post_slack_message(client, None, player_user_id, text)
+    # post_slack_message(client, None, player_user_id, text)
 
     for card_name, card in hand.cards.items():
         action = {
@@ -140,7 +102,7 @@ def prompt_player_pick(hand):
                 'actions': actions
             }]
             text = ''
-            post_slack_message(client, attachments, player_user_id, text)
+            # post_slack_message(client, attachments, player_user_id, text)
             actions = []
 
     attachments = [{
@@ -148,7 +110,7 @@ def prompt_player_pick(hand):
         'callback_id': 'choose_card',
         'actions': actions
     }]
-    post_slack_message(client, attachments, player_user_id, text)
+    # post_slack_message(client, attachments, player_user_id, text)
 
 
 # TODO: Get user_id from DB
@@ -156,7 +118,7 @@ def get_user_id():
     return USER_ID
 
 
-@app.route('/command', methods=['POST'])
+@flask_app.route('/command', methods=['POST'])
 def command():
     # TODO: Verify request
     #if not request.form.get('token') == SLACK_WEBHOOK_SECRET:
@@ -193,15 +155,14 @@ def command():
             # TODO: Remove card from hand & add to player's deck
     else:
         text = 'Hello from the app! :sushi:'
-        post_slack_message(client, None, channel_id, text)
+        # post_slack_message(client, None, channel_id, text)
     return Response(), 200
 
 
-@app.route('/')
+@flask_app.route('/')
 def hello_world():
     return 'Hello world!'
-    # TODO: Return how to play
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    flask_app.run(debug=True)

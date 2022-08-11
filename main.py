@@ -1,10 +1,8 @@
 import os
-
+from config import *
+from sushigo.deck import *
+from sushigo.slack_app import *
 from slack_bolt import App
-
-PORT = "PORT"
-SLACK_BOT_TOKEN = "SLACK_BOT_TOKEN"
-SLACK_SIGNING_SECRET = "SLACK_SIGNING_SECRET"
 
 # Initialize app
 # HTTP server adapter is not recommended for production
@@ -14,6 +12,8 @@ app = App(
 )
 
 # Add functionality here
+# TODO: Add buttons to for various tests:
+# [ ] initialize a game and DM a hand
 @app.event("app_home_opened")
 def update_home_tab(client, event, logger):
   try:
@@ -47,6 +47,7 @@ def update_home_tab(client, event, logger):
           },
           {
             "type": "actions",
+            "block_id": "actions",
             "elements": [
               {
                 "type": "button",
@@ -54,6 +55,14 @@ def update_home_tab(client, event, logger):
                   "type": "plain_text",
                   "text": "Click me!"
                 }
+              },
+              {
+                "type": "button",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Test deal hand"
+                },
+                "action_id": "deal_hand"
               }
             ]
           }
@@ -63,6 +72,22 @@ def update_home_tab(client, event, logger):
   
   except Exception as e:
     logger.error(f"Error publishing home tab: {e}")
+
+
+@app.action({
+  "block_id": "actions",
+  "action_id": "deal_hand"
+})
+def test_deal_hand(ack, say, logger):
+  try:
+    ack()
+    logger.info("deal_hand triggered")
+    deck = Deck()
+    say(channel=GENERAL_CHANNEL_ID, blocks=PROMPT_START_GAME_BLOCK, text=PROMPT_START_GAME_TEXT)
+
+  except Exception as e:
+    logger.error(f"Error handling deal_hand action: {e}")
+
 
 # Start app
 if __name__ == "__main__":

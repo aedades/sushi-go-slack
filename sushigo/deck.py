@@ -91,6 +91,7 @@ class Deck:
         self._add_cards(Wasabi, CARD_INFO['wasabi']['count'])
         self._add_cards(Chopsticks, CARD_INFO['chopsticks']['count'])
         self._add_cards(Pudding, CARD_INFO['pudding']['count'])
+        self.shuffle()
 
     def _add_cards(self, card, count):
         for x in range(count):
@@ -239,9 +240,3 @@ class Wasabi(Card):
     def __init__(self, card_num):
         card_type = 'wasabi'
         super().__init__(card_type, card_num, CARD_INFO[card_type]['CLDR'])
-
-
-def init_deck():
-    deck = Deck()
-    deck.shuffle()
-    return deck
