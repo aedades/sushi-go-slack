@@ -1,11 +1,4 @@
-from src.main import (
-    start_game,
-    add_player,
-    prompt_start_game,
-    get_players,
-    deal_hands,
-    prompt_player_pick,
-)
+from sushigo.main import *
 import inspect
 
 class TestDeck:
@@ -37,11 +30,14 @@ class TestDeck:
         args_spec = inspect.getfullargspec(prompt_start_game)
         self.assert_method_signature(num_args, args, args_spec)
 
+    # Not sure what this was for
+    '''
     def test_get_players(self):
         num_args = 1
         args = ['channel_id']
         args_spec = inspect.getfullargspec(get_players)
         self.assert_method_signature(num_args, args, args_spec)
+    '''
 
     def test_deal_hands(self):
         num_args = 2

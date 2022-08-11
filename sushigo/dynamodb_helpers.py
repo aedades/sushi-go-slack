@@ -1,3 +1,7 @@
+import json
+from boto3.dynamodb.conditions import Key, Attr
+from flask import request
+
 def parse_payload(payload):
     payload = json.loads(request.form.get('payload'))
     print(payload)
@@ -23,7 +27,18 @@ def update_user_item(table, item):
 
 
 def update_hand_item(table, item):
-    kwargs = {}
+    kwargs= {
+        'Key': {
+            'hand_id': str(item['hand_id'])
+        },
+        'ExpressionAttributeValues': {
+            ':u': item['cur_user_id'],
+            ':h': item['hand'],
+            ':c': item['channel_id'],
+            ':o': item['chose_card']
+        },
+        'UpdateExpression': 'SET cur_user_id = :u, hand = :h, channel_id = :c, chose_card = :o'
+    }
     _update_item(table, kwargs)
 
 
@@ -37,6 +52,16 @@ def get_user_item(table, item):
     return item
 
 
+def scan_players(table, channel_id):
+    kwargs = {
+        'FilterExpression': Attr('channel_id').eq(channel_id)
+    }
+    items = _scan(table, kwargs)
+    players = [ item['user_id'] for item in items ]
+    print(players)
+    return players
+
+
 def _get_item(table, kwargs):
     response = table.get_item(**kwargs)
     item = response['Item']
@@ -46,3 +71,9 @@ def _get_item(table, kwargs):
 
 def _update_item(table, kwargs):
     table.update_item(**kwargs)
+
+
+def _scan(table, kwargs):
+    response = table.scan(**kwargs)
+    items = response['Items']
+    return items

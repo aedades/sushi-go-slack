@@ -1,4 +1,4 @@
-from src.deck import *
+from sushigo.deck import *
 import emoji
 
 DECK_SIZE = 108

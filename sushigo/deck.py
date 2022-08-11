@@ -14,7 +14,11 @@ CHOPSTICKS_CLDR = ':chopsticks:'
 PUDDING_CLDR = ':custard:'
 
 HAND_SIZE = {
-    2: 10
+    1: 10,
+    2: 10,
+    3: 9,
+    4: 8,
+    5: 7
 }
 
 CARD_INFO = {

@@ -1,6 +1,8 @@
 import pickle
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
 
-def post_slack_message(attachments, channel, text):
+def post_slack_message(client, attachments, channel, text):
     kwargs = {
         'channel': channel
     }
