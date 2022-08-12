@@ -31,7 +31,7 @@ ngrok http 3000
 ngrok http 3000
 ```
 
-Set the app's [event subscriptions request URL](https://api.slack.com/apps/A01HJTN6TDZ/event-subscriptions?) and [interactivity request URL]() to the `ngrok` endpoint (`/slack/events` and `/`, respectively).  For example, `https://9ea2-73-140-230-25.ngrok.io/slack/events`.
+Set the app's [event subscriptions request URL](https://api.slack.com/apps/A01HJTN6TDZ/event-subscriptions?) and [interactivity request URL](https://api.slack.com/apps/A01HJTN6TDZ/interactive-messages) to the `ngrok` endpoint (`/slack/events`).  For example, `https://9ea2-73-140-230-25.ngrok.io/slack/events`.
 
 ## Design
 
@@ -54,3 +54,21 @@ Classes:
 - Deck
 - Hand
 - User
+
+
+## Scratch
+
+```
+WARNING:slack_bolt.App:Unhandled request ({'type': 'block_actions', 'block_id': 'add_player', 'action_id': 'VLL3'})
+---
+[Suggestion] You can handle this type of event with the following listener function:
+
+@app.action("VLL3")
+def handle_some_action(ack, body, logger):
+    ack()
+    logger.info(body)
+
+127.0.0.1 - - [12/Aug/2022 00:00:44] "POST /slack/events HTTP/1.1" 404 -
+
+WARNING:slack_bolt.App:Unhandled request ({'type': 'block_actions', 'block_id': 'start_game', 'action_id': 'zwygK'})
+```

@@ -1,4 +1,4 @@
-from sushigo.deck import *
+from sushigo.cards import *
 import emoji
 
 CARD_COUNT = 1

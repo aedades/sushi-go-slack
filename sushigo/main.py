@@ -148,7 +148,7 @@ def command():
         if callback_id == 'add_player':
             add_player(channel_id, user_id)
         elif callback_id == 'prompt_start_game':
-            deck = init_deck()
+            deck = Deck()
             deal_hands(channel_id, deck)
         elif callback_id == 'choose_card':
             pass

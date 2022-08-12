@@ -4,14 +4,17 @@ def get_num_players():
 
 PROMPT_START_GAME_BLOCK = [
     {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": f'Start the game with {get_num_players()} players?'
-        }
-    },
-    {
-    "type": "divider"
+        "type": "actions",
+        "block_id": "add_player",
+        "elements": [
+            {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "I want to play! :hand: (Enter the game as a player)"
+                }
+            }
+        ]
     },
     {
         "type": "actions",

@@ -2,7 +2,10 @@ import os
 from config import *
 from sushigo.deck import *
 from sushigo.slack_app import *
+from slack_client.slack import *
 from slack_bolt import App
+
+slack = SlackClient()
 
 # Initialize app
 # HTTP server adapter is not recommended for production
@@ -78,11 +81,16 @@ def update_home_tab(client, event, logger):
   "block_id": "actions",
   "action_id": "deal_hand"
 })
-def test_deal_hand(ack, say, logger):
+
+def test_deal_hand(ack, say, body, logger):
   try:
     ack()
     logger.info("deal_hand triggered")
     deck = Deck()
+    logger.info(f'body: {body}')
+    user = body['user']['name']
+
+    say(channel=GENERAL_CHANNEL_ID, text=f'{user} wants to start a game!')
     say(channel=GENERAL_CHANNEL_ID, blocks=PROMPT_START_GAME_BLOCK, text=PROMPT_START_GAME_TEXT)
 
   except Exception as e:
