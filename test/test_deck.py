@@ -8,45 +8,45 @@ NUMBER_OF_PLAYERS = 2
 class TestDeck:
     def test_chopsticks(self):
         chopsticks = Chopsticks(CARD_COUNT)
-        assert chopsticks.face == CHOPSTICKS_CLDR
+        assert chopsticks.emoji == CHOPSTICKS_EMOJI
 
     def test_dumpling(self):
         dumpling = Dumpling(CARD_COUNT)
-        assert dumpling.face == DUMPLING_CLDR
+        assert dumpling.emoji == DUMPLING_EMOJI
 
     def test_maki_one(self):
         maki = MakiOne(CARD_COUNT)
         assert maki.name == f'maki_one_{CARD_COUNT}'
-        assert maki.face == f'1{MAKI_CLDR}'
+        assert maki.emoji == f'1{MAKI_EMOJI}'
         assert maki.value == 1
 
     def test_nigiri_egg(self):
         nigiri_egg = NigiriEgg(CARD_COUNT)
-        assert nigiri_egg.face == NIGIRI_EGG_CLDR
+        assert nigiri_egg.emoji == NIGIRI_EGG_EMOJI
 
     def test_nigiri_salmon(self):
         nigiri_salmon = NigiriSalmon(CARD_COUNT)
-        assert nigiri_salmon.face == NIGIRI_SALMON_CLDR
+        assert nigiri_salmon.emoji == NIGIRI_SALMON_EMOJI
 
     def test_nigiri_squid(self):
         nigiri_squid = NigiriSquid(CARD_COUNT)
-        assert nigiri_squid.face == NIGIRI_SQUID_CLDR
+        assert nigiri_squid.emoji == NIGIRI_SQUID_EMOJI
 
     def test_pudding(self):
         pudding = Pudding(CARD_COUNT)
-        assert pudding.face == PUDDING_CLDR
+        assert pudding.emoji == PUDDING_EMOJI
 
     def test_sashimi(self):
         sashimi = Sashimi(CARD_COUNT)
-        assert sashimi.face == SASHIMI_CLDR
+        assert sashimi.emoji == SASHIMI_EMOJI
 
     def test_tempura(self):
         tempura = Tempura(CARD_COUNT)
-        assert tempura.face == TEMPURA_CLDR
+        assert tempura.emoji == TEMPURA_EMOJI
 
     def test_wasabi(self):
         wasabi = Wasabi(CARD_COUNT)
-        assert wasabi.face == WASABI_CLDR
+        assert wasabi.emoji == WASABI_EMOJI
 
     def test_init_deck(self):
         deck = Deck()
