@@ -2,52 +2,9 @@ from sushigo.deck import *
 import emoji
 
 DECK_SIZE = 108
-CARD_COUNT = 1
 NUMBER_OF_PLAYERS = 2
 
 class TestDeck:
-    def test_chopsticks(self):
-        chopsticks = Chopsticks(CARD_COUNT)
-        assert chopsticks.emoji == CHOPSTICKS_EMOJI
-
-    def test_dumpling(self):
-        dumpling = Dumpling(CARD_COUNT)
-        assert dumpling.emoji == DUMPLING_EMOJI
-
-    def test_maki_one(self):
-        maki = MakiOne(CARD_COUNT)
-        assert maki.name == f'maki_one_{CARD_COUNT}'
-        assert maki.emoji == f'1{MAKI_EMOJI}'
-        assert maki.value == 1
-
-    def test_nigiri_egg(self):
-        nigiri_egg = NigiriEgg(CARD_COUNT)
-        assert nigiri_egg.emoji == NIGIRI_EGG_EMOJI
-
-    def test_nigiri_salmon(self):
-        nigiri_salmon = NigiriSalmon(CARD_COUNT)
-        assert nigiri_salmon.emoji == NIGIRI_SALMON_EMOJI
-
-    def test_nigiri_squid(self):
-        nigiri_squid = NigiriSquid(CARD_COUNT)
-        assert nigiri_squid.emoji == NIGIRI_SQUID_EMOJI
-
-    def test_pudding(self):
-        pudding = Pudding(CARD_COUNT)
-        assert pudding.emoji == PUDDING_EMOJI
-
-    def test_sashimi(self):
-        sashimi = Sashimi(CARD_COUNT)
-        assert sashimi.emoji == SASHIMI_EMOJI
-
-    def test_tempura(self):
-        tempura = Tempura(CARD_COUNT)
-        assert tempura.emoji == TEMPURA_EMOJI
-
-    def test_wasabi(self):
-        wasabi = Wasabi(CARD_COUNT)
-        assert wasabi.emoji == WASABI_EMOJI
-
     def test_init_deck(self):
         deck = Deck()
         assert len(deck) == DECK_SIZE
@@ -70,13 +27,15 @@ class TestDeck:
         assert len(deck) == DECK_SIZE - (NUMBER_OF_PLAYERS * HAND_SIZE[NUMBER_OF_PLAYERS])
         assert len(hands[0]) == HAND_SIZE[NUMBER_OF_PLAYERS]
 
-    def test_deck_remove_card(self):
+    def test_hand_add_and_remove_card(self):
         deck = Deck()
         hands = deck.deal_hands(NUMBER_OF_PLAYERS)
-        hand = hands[0]
-        starting_hand_size = len(hand)
-        card_to_remove = list(hand.cards.keys())[0]
-        removed_card = hand.remove_card(card_to_remove)
-        assert removed_card.name == card_to_remove
-        assert not card_to_remove in hand.cards.keys()
-        assert len(hand) == starting_hand_size - 1
+        starting_hand_size = len(hands[0])
+        card = list(hands[0].cards.keys())[0]
+        removed_card = hands[0].remove_card(card)
+        hands[1].add_card(removed_card)
+        assert removed_card.name == card
+        assert not card in hands[0].cards.keys()
+        assert card in hands[1].cards.keys()
+        assert len(hands[0]) == starting_hand_size - 1
+        assert len(hands[1]) == starting_hand_size + 1
