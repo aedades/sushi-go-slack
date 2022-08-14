@@ -1,3 +1,5 @@
+from sushigo.deck import Deck
+
 class Store:
     '''
     Store Interface
@@ -16,11 +18,11 @@ class Store:
         Returns a list of user_ids in the current game
     get_scores(chennel_id, user_id)
         Returns list of scores for the given user
-    update_game_info(channel_id)
+    update_game_info(channel_id, game_info)
         Update the stored GameInfo for the current game
-    update_hand(channel_id, hand_info)
+    update_hand(channel_id, hand_id, hand_info)
         Update the stored HandInfo for the given hand
-    update_user(channel_id, user_info)
+    update_user(channel_id, user_id, user_info)
         Update the stored UserInfo for the given user
     remove_user(channel_id, user_id)
         Remove a user by user_id
@@ -29,7 +31,7 @@ class Store:
     def __init__(self):
         pass
 
-    def get_game_info(self):
+    def get_game_info(self, channel_id):
         pass
 
     def get_hand(self, user_id):
@@ -47,7 +49,7 @@ class Store:
     def get_scores(self, channel_id, user_id):
         pass
 
-    def update_game_info(self):
+    def update_game_info(self, channel_id, game_info):
         pass
 
     def update_hand(self, hand_info):
@@ -64,6 +66,7 @@ class GameInfo:
     '''
     Attributes
     ----------
+    deck : Deck
     game_started : bool
         Flag indicating whether the game is already in-progress
 
@@ -74,7 +77,8 @@ class GameInfo:
     round_complete : bool
         Flag indicating whether the current round is complete
     '''
-    def __init__(self, game_started=False, completed_rounds=0, current_round=1, round_complete=False):
+    def __init__(self, deck=Deck(), game_started=False, completed_rounds=0, current_round=1, round_complete=False):
+        self.deck = deck
         self.game_started = game_started
         self.completed_rounds = completed_rounds
         self.current_round = current_round

@@ -7,7 +7,9 @@ class Memory(Store):
 
     Attributes
     ----------
-    game_info : GameInfo
+    game_info : dict
+        Key: channel_id
+        Value: GameInfo
     hands : dict
         Key: channel_id
         Value: dict
@@ -35,7 +37,7 @@ class Memory(Store):
         Returns a list of user_ids in the current game
     get_scores(chennel_id, user_id)
         Returns list of scores for the given user
-    update_game_info(channel_id)
+    update_game_info(channel_id, game_info)
         Update the stored GameInfo for the current game
     update_hand(channel_id, hand_id, hand_info)
         Update the stored HandInfo for the given hand
@@ -46,14 +48,13 @@ class Memory(Store):
     '''
 
     def __init__(self, round_complete=False):
-        self.game_info = GameInfo()
+        self.game_info = {}
         self.hands = {}
         self.users = {}
-        self.round_complete = round_complete
 
-    def get_game_info(self):
+    def get_game_info(self, channel_id):
         '''Returns the GameInfo for the current game'''
-        return self.game_info
+        return self.game_info[channel_id]
 
     def get_hand(self, channel_id, hand_id):
         '''Returns the unpickled Hand'''
@@ -87,9 +88,9 @@ class Memory(Store):
         '''Returns list of scores for the given user'''
         return self.users[channel_id][user_id].scores
 
-    def update_game_info(self, channel_id):
+    def update_game_info(self, channel_id, game_info):
         '''Update the stored GameInfo for the current game'''
-        pass
+        self.game_info[channel_id] = game_info
 
     def update_user(self, channel_id, user_info):
         '''Update the stored UserInfo for the given user'''

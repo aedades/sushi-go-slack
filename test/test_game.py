@@ -24,11 +24,16 @@ class TestGame():
         if start_game:
             self.game_state.start_game()
 
+    def get_game_info(self):
+        return self.game_state.store.get_game_info(CHANNEL_ID)
+
     def test_init_game(self):
-        assert self.game_state.game_started == False
-        assert self.game_state.completed_rounds == 0
-        assert self.game_state.current_round == 1
-        assert self.game_state.round_complete == False
+        game_info = self.game_state.store.get_game_info(CHANNEL_ID)
+        assert isinstance(game_info.deck, Deck) == True
+        assert game_info.game_started == False
+        assert game_info.completed_rounds == 0
+        assert game_info.current_round == 1
+        assert game_info.round_complete == False
 
     def test_can_game_start(self):
         assert self.game_state._can_game_start() == False
@@ -47,22 +52,25 @@ class TestGame():
         assert list(self.game_state.get_players()) == PLAYER_IDS
 
     def test_start_game(self):
-        assert self.game_state.game_started == False
+        game_info = self.get_game_info()
+        assert game_info.game_started == False
         assert len(self.game_state.get_players()) == 0
-        assert len(self.game_state.deck) == DECK_TOTAL_NUM_CARDS
+        assert len(game_info.deck) == DECK_TOTAL_NUM_CARDS
         assert len(self.game_state.get_hands()) == 0
 
         self.add_all_players(start_game=True)
 
+        game_info = self.get_game_info()
         assert len(self.game_state.get_players()) == NUM_PLAYERS
-        assert len(self.game_state.deck) == DECK_TOTAL_NUM_CARDS - (NUM_PLAYERS * HAND_SIZE[NUM_PLAYERS])
+        assert len(game_info.deck) == DECK_TOTAL_NUM_CARDS - (NUM_PLAYERS * HAND_SIZE[NUM_PLAYERS])
         assert len(self.game_state.get_hands()) == NUM_PLAYERS
-        assert self.game_state.game_started == True
+        assert game_info.game_started == True
 
     def test_start_game_not_enough_players(self):
         with pytest.raises(NotEnoughPlayersError):
             self.game_state.start_game()
-        assert self.game_state.game_started == False
+        game_info = self.get_game_info()
+        assert game_info.game_started == False
 
     def test_start_round(self):
         self.add_all_players(start_game=True)

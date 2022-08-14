@@ -8,16 +8,7 @@ class Game:
 
     Attributes
     ----------
-    game_started : bool
-        Flag indicating whether the game is already in-progress
-    completed_rounds : int
-        The number of completed rounds
-    current_round : int
-        The current round in play
-    round_complete : bool
-        Flag indicating whether the current round is complete
-
-    deck : Deck
+    channel_id : str
     store : Store
 
 
@@ -46,14 +37,12 @@ class Game:
         Score player hands and save result in store
     '''
 
-    def __init__(self, channel_id, store, game_started=False, completed_rounds=0, current_round=1, round_complete=False):
+    def __init__(self, channel_id, store):
         self.channel_id = channel_id
-        self.game_started = game_started
-        self.completed_rounds = completed_rounds
-        self.current_round = current_round
-        self.round_complete = round_complete
-        self.deck = Deck()
         self.store = store
+
+        game_info = GameInfo()
+        self.store.update_game_info(channel_id, game_info)
 
     def add_player(self, user_id, channel_id):
         '''Add a player to the current game (until the game is started)'''
@@ -75,12 +64,17 @@ class Game:
         '''Start the game'''
         players = self.get_players()
         # Check if more than the min number of players have joined the game
+        game_info = self.store.get_game_info(self.channel_id)
         if self._can_game_start():
-            hands = self.deck.deal_hands(len(players))
+            # Deal hands
+            hands = game_info.deck.deal_hands(len(players))
+            # Assign hands to players
             for i, hand in enumerate(hands):
                 hand_info = HandInfo(hand.id, self.channel_id, players[i], hand)
                 self.store.update_hand(self.channel_id, hand_info)
-            self.game_started = True
+            # Save game info
+            new_game_info = GameInfo(game_info.deck, game_started=True)
+            self.store.update_game_info(self.channel_id, new_game_info)
         else:
             raise NotEnoughPlayersError(len(players))
 
