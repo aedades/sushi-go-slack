@@ -1,5 +1,5 @@
 import uuid
-from sushigo.deck import Deck
+from services.game_worker.sushigo.deck import Deck
 
 class Store:
     '''
@@ -97,7 +97,7 @@ class HandInfo:
         added to the user's )
     current_user_id : str
         User ID of the user who currently "holds" this hand
-    hand : pickled Hand
+    hand : Hand
         Slack channel ID used to distinguish between multiple games
     '''
 

@@ -27,7 +27,7 @@ ngrok http 3000
 ## Testing
 
 ```
-python -m pytest -v
+python -m pytest -vv --cov
 ```
 
 ### Local testing

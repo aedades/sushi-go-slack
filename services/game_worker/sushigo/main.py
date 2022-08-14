@@ -1,65 +1,8 @@
-import os
-import boto3
 from config import *
-from sushigo.deck import *
+from services.game_worker.sushigo.deck import *
 from flask import Flask, request, Response
 
 flask_app = Flask(__name__)
-
-def start_game(channel_id, username):
-    # TODO: Check if game already in progress (channel_id in table)
-    attachments = [{
-        'text': f'<@{username}> wants to start a game of Sushi Go! :sushi:',
-        'callback_id': 'add_player',
-        'actions': [
-            {
-                'name': 'add_player',
-                'text': 'I want to play :raised_hand:',
-                'type': 'button',
-                'value': 'add_player'
-            }
-        ]
-    }]
-    print(attachments)
-    print(channel_id)
-    # post_slack_message(client, attachments, channel_id, None)
-
-def prompt_start_game(channel_id, user_id):
-    attachments = [{
-        'text': f'Start the game with {get_num_players()} players?',
-        'callback_id': 'prompt_start_game',
-        'actions': [
-            {
-                'name': 'prompt_start_game',
-                'text': 'Itadakimasu! :bento: (Start game)',
-                'type': 'button',
-                'value': 'deal_cards'
-            }
-        ]
-    }]
-    # post_slack_message(client, attachments, channel_id, None)
-    
-
-def deal_hands(channel_id, deck):
-    hands = deck.deal_hands(get_num_players())
-    # TODO: Assign hands to unique players
-    # get players in current game
-    user_ids = store.get_users()
-    hand_id = 1
-    user_id = user_ids[0]
-    for hand in hands:
-        # if just 1 player, assign all hands to that player
-        if len(user_ids) == 1:
-            user_id = user_ids[0]
-        else:
-            user_id = user_ids.pop()
-
-        hand_info = HandInfo(None, user_id, hand.pickle_hand(), channel_id, False)
-        store.update_hand(hand_id, hand_info)
-        prompt_player_pick(hand)
-        hand_id += 1
-        print(hand)
-
 
 def prompt_player_pick(hand):
     # TODO: DM hand to player

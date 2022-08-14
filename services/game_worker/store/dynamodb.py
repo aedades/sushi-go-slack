@@ -49,6 +49,14 @@ item = {
 update_hand_item(dynamodb_hands_table, item)
 '''
 
+# def pickle_hand(self):
+#     '''Pickle the hand for storage'''
+#     return pickle.dumps(self, 0).decode()
+
+# def unpickle_hand(self):
+#     '''Unpickle the hand retrieved from storage'''
+#     return pickle.loads(self.encode())
+
 
 def parse_payload(payload):
     payload = json.loads(request.form.get('payload'))

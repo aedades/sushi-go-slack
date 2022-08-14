@@ -1,5 +1,4 @@
-import json
-from store.store import *
+from services.game_worker.store.store import *
 
 class Memory(Store):
     '''

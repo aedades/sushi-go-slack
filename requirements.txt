@@ -1,5 +1,6 @@
 slack_sdk
 flask
 pytest
+pytest-cov
 boto3
 emoji

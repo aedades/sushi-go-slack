@@ -1,6 +1,6 @@
 from config import *
-from store import *
-from sushigo.deck import *
+from services.game_worker.store.store import *
+from services.game_worker.sushigo.deck import *
 
 class Game:
     '''
@@ -34,7 +34,7 @@ class Game:
     start_round()
         Deal hands for the round and wait for players to pick cards
     complete_round()
-        Score player hands and save result in store
+        Score player hands, save result in store, and pass passing hands to the next player
     '''
 
     def __init__(self, channel_id, store):
@@ -46,7 +46,7 @@ class Game:
 
     def add_player(self, user_id, channel_id):
         '''Add a player to the current game (until the game is started)'''
-        self.store.update_user(self.channel_id, store.UserInfo(user_id, channel_id))
+        self.store.update_user(self.channel_id, UserInfo(user_id, channel_id))
 
     def remove_player(self, user_id):
         '''Remove a player from the current game (until the game is started)'''
@@ -90,7 +90,7 @@ class Game:
         self._deal_hands()
 
     def complete_round(self):
-        '''Score player hands and save result in store'''
+        '''Score player hands, save result in store, and pass passing hands to the next player'''
         pass
 
     def _can_game_start(self):

@@ -93,9 +93,8 @@ def test_deal_hand(ack, say, body, logger):
     logger.info("deal_hand triggered")
     deck = Deck()
     logger.info(f'body: {body}')
-    user = body['user']['name']
 
-    say(channel=GENERAL_CHANNEL_ID, text=f'{user} wants to start a game!')
+    say(channel=GENERAL_CHANNEL_ID, text=f'{body["user"]["name"]} wants to start a game!')
     say(channel=GENERAL_CHANNEL_ID, blocks=PROMPT_START_GAME_BLOCK, text=PROMPT_START_GAME_TEXT)
 
   except Exception as e:

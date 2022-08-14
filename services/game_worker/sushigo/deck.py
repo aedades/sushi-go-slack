@@ -1,8 +1,6 @@
-import emoji
-import pickle
 import random
 import uuid
-from sushigo.cards import *
+from services.game_worker.sushigo.cards import *
 
 HAND_SIZE = {
     1: 10,
@@ -114,10 +112,6 @@ class Hand:
         Add a card to the Hand
     remove_card(card_name)
         Remove a Card from the hand by name
-    pickle_hand()
-        Pickle the hand for storage
-    update_hand(hand_id, hand_info)
-        Unpickle the hand retrieved from storage
     '''
     def __init__(self):
         self.id = str(uuid.uuid4())
@@ -130,14 +124,6 @@ class Hand:
     def remove_card(self, card_name):
         '''Remove a Card from the hand by name'''
         return self.cards.pop(card_name)
-
-    def pickle_hand(self):
-        '''Pickle the hand for storage'''
-        return pickle.dumps(self, 0).decode()
-
-    def unpickle_hand(self):
-        '''Unpickle the hand retrieved from storage'''
-        return pickle.loads(self.encode())
 
     def __len__(self):
         return len(self.cards)

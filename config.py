@@ -1,7 +1,7 @@
 import os
 import logging
-from store.store import *
-from store.memory import *
+from services.game_worker.store.store import *
+from services.game_worker.store.memory import *
 
 PORT = "PORT"
 SLACK_BOT_TOKEN = "SLACK_BOT_TOKEN"
