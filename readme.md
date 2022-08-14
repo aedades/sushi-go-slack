@@ -10,7 +10,7 @@ Set up:
 # Create virtual environment
 python3 -m venv .venv
 
-# aActivate
+# Activate
 source .venv/bin/activate
 
 # Adding app credentials
@@ -24,7 +24,13 @@ export SLACK_SIGNING_SECRET=
 ngrok http 3000
 ```
 
-## Local testing
+## Testing
+
+```
+python -m pytest -v
+```
+
+### Local testing
 
 ```
 # Run ngrok

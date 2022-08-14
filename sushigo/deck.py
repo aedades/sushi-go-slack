@@ -1,6 +1,7 @@
 import emoji
 import pickle
 import random
+import uuid
 from sushigo.cards import *
 
 HAND_SIZE = {
@@ -74,7 +75,7 @@ class Deck:
             hands.append(Hand())
         self._shuffle()
         for x in range(HAND_SIZE[number_of_players]): # 10
-            for hand in hands: # 2
+            for hand in hands:
                 hand.add_card(self.cards.pop())
         return hands
 
@@ -102,6 +103,7 @@ class Hand:
 
     Attributes
     ----------
+    id : str
     cards : dict
         Key: card_name
         Value: card
@@ -118,6 +120,7 @@ class Hand:
         Unpickle the hand retrieved from storage
     '''
     def __init__(self):
+        self.id = str(uuid.uuid4())
         self.cards = {}
 
     def add_card(self, card):

@@ -4,19 +4,26 @@ class Store:
 
     Methods
     -------
-    get_game_info()
+    get_game_info(channel_id)
         Returns the GameInfo for the current game
-    get_hand(hand_id)
+    get_hand(channel_id, hand_id)
         Returns the unpickled Hand
-    get_users()
-        Returns a list of users in the current game
-    update_game_info()
+    get_hands(channel_id)
+        Returns a list of hand_ids in the current game
+    get_user(channel_id, user_id)
+        Returns the UserInfo stored for the given user
+    get_users(channel_id)
+        Returns a list of user_ids in the current game
+    get_scores(chennel_id, user_id)
+        Returns list of scores for the given user
+    update_game_info(channel_id)
         Update the stored GameInfo for the current game
-    update_hand(hand_id, hand_info)
+    update_hand(channel_id, hand_info)
         Update the stored HandInfo for the given hand
-    update_user(user_id, user_info)
+    update_user(channel_id, user_info)
         Update the stored UserInfo for the given user
-    remove_user(user_id)
+    remove_user(channel_id, user_id)
+        Remove a user by user_id
     '''
 
     def __init__(self):
@@ -25,19 +32,28 @@ class Store:
     def get_game_info(self):
         pass
 
-    def get_hand(self, hand_id):
+    def get_hand(self, user_id):
         pass
 
-    def get_users(self):
+    def get_hands(self, channel_id):
+        pass
+
+    def get_user(self, user_id):
+        pass
+
+    def get_users(self, channel_id):
+        pass
+
+    def get_scores(self, channel_id, user_id):
         pass
 
     def update_game_info(self):
         pass
 
-    def update_hand(self, hand_id, hand_info):
+    def update_hand(self, hand_info):
         pass
 
-    def update_user(self, user_id, user_info):
+    def update_user(self, user_info):
         pass
 
     def remove_user(self, user_id):
@@ -80,8 +96,8 @@ class HandInfo:
         Slack channel ID used to distinguish between multiple games
     '''
 
-    def __init__(self, user_id, hand, channel_id, chose_card=False):
-        self. hand_id
+    def __init__(self, hand_id, channel_id, user_id, hand, chose_card=False):
+        self.hand_id = hand_id
         self.channel_id = channel_id
         self.chose_card = chose_card
         self.current_user_id = user_id
@@ -93,15 +109,15 @@ class UserInfo:
     Attributes
     ----------
     user_id : str
-    hand_id : str
-        ID of the hand the user currently "holds"
     channel_id : str
         Slack channel ID used to distinguish between multiple games
+    hand_id : str
+        ID of the hand the user currently "holds"
     scores : list of int
     '''
 
-    def __init__(self, user_id, hand_id=None, channel_id=None, scores=[]):
+    def __init__(self, user_id, channel_id, hand_id=None, scores=[]):
         self.user_id = user_id
-        self.hand_id = hand_id
         self.channel_id = channel_id
+        self.hand_id = hand_id
         self.scores = scores

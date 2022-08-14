@@ -6,19 +6,25 @@ from sushigo.deck import *
 # game_state = None
 PLAYER_IDS = ['1', '2', '3']
 NUM_PLAYERS = len(PLAYER_IDS)
+CHANNEL_ID = 'TEST_CHANNEL_ID'
+
 
 class TestGame():
     @pytest.fixture(autouse=True)
     def run_around_tests(self):
         # Code that will run before your test
-        # game_state = Game()
         store = Memory()
-        self.game_state = Game(store)
+        self.game_state = Game(CHANNEL_ID, store)
         # yield
         # Code that will run after your test, for example:
 
+    def add_all_players(self, start_game=False):
+        for user_id in PLAYER_IDS:
+            self.game_state.add_player(user_id, CHANNEL_ID)
+        if start_game:
+            self.game_state.start_game()
+
     def test_init_game(self):
-        # game_state = Game()
         assert self.game_state.game_started == False
         assert self.game_state.completed_rounds == 0
         assert self.game_state.current_round == 1
@@ -26,34 +32,43 @@ class TestGame():
 
     def test_can_game_start(self):
         assert self.game_state._can_game_start() == False
-        for user_id in PLAYER_IDS:
-            self.game_state.add_player(user_id)
+        self.add_all_players()
         assert self.game_state._can_game_start() == True
 
     def test_add_remove_player(self):
         assert list(self.game_state.get_players()) == []
-        self.game_state.add_player('1')
+        self.game_state.add_player('1', CHANNEL_ID)
         assert list(self.game_state.get_players()) == ['1']
         self.game_state.remove_player('1')
         assert list(self.game_state.get_players()) == []
 
     def test_get_players(self):
-        for user_id in PLAYER_IDS:
-            self.game_state.add_player(user_id)
+        self.add_all_players()
         assert list(self.game_state.get_players()) == PLAYER_IDS
 
     def test_start_game(self):
         assert self.game_state.game_started == False
+        assert len(self.game_state.get_players()) == 0
+        assert len(self.game_state.deck) == DECK_TOTAL_NUM_CARDS
+        assert len(self.game_state.get_hands()) == 0
 
-        for user_id in PLAYER_IDS:
-            self.game_state.add_player(user_id)
-        self.game_state.start_game()
+        self.add_all_players(start_game=True)
 
+        assert len(self.game_state.get_players()) == NUM_PLAYERS
         assert len(self.game_state.deck) == DECK_TOTAL_NUM_CARDS - (NUM_PLAYERS * HAND_SIZE[NUM_PLAYERS])
-        assert len(self.game_state.hands) == NUM_PLAYERS
+        assert len(self.game_state.get_hands()) == NUM_PLAYERS
         assert self.game_state.game_started == True
 
     def test_start_game_not_enough_players(self):
         with pytest.raises(NotEnoughPlayersError):
             self.game_state.start_game()
         assert self.game_state.game_started == False
+
+    def test_start_round(self):
+        self.add_all_players(start_game=True)
+
+        self.game_state.start_round()
+        for user_id in PLAYER_IDS:
+            user_info = self.game_state.store.get_user(self.game_state.channel_id, user_id)
+            assert user_info != None
+            assert user_info.hand_id != None
