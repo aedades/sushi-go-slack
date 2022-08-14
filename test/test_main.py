@@ -18,26 +18,11 @@ class TestDeck:
         args_spec = inspect.getfullargspec(start_game)
         self.assert_method_signature(num_args, args, args_spec)
 
-    def test_add_player(self):
-        num_args = 2
-        args = ['channel_id', 'user_id']
-        args_spec = inspect.getfullargspec(add_player)
-        self.assert_method_signature(num_args, args, args_spec)
-
     def test_prompt_start_game(self):
         num_args = 2
         args = ['channel_id', 'user_id']
         args_spec = inspect.getfullargspec(prompt_start_game)
         self.assert_method_signature(num_args, args, args_spec)
-
-    # Not sure what this was for
-    '''
-    def test_get_players(self):
-        num_args = 1
-        args = ['channel_id']
-        args_spec = inspect.getfullargspec(get_players)
-        self.assert_method_signature(num_args, args, args_spec)
-    '''
 
     def test_deal_hands(self):
         num_args = 2

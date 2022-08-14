@@ -23,18 +23,6 @@ def start_game(channel_id, username):
     print(attachments)
     print(channel_id)
     # post_slack_message(client, attachments, channel_id, None)
-    
-
-def add_player(channel_id, user_id):
-    # TODO: Check if game already in progress (channel_id in table)
-    user_info = UserInfo(None, channel_id)
-    store.update_user(user_id, user_info)
-    text = f'<@{user_id}> joined the game :wave:'
-    # post_slack_message(client, None, channel_id, text)
-
-    if get_num_players() >= MIN_NUM_PLAYERS:
-        prompt_start_game(channel_id, user_id)
-
 
 def prompt_start_game(channel_id, user_id):
     attachments = [{
@@ -50,11 +38,6 @@ def prompt_start_game(channel_id, user_id):
         ]
     }]
     # post_slack_message(client, attachments, channel_id, None)
-
-
-def get_num_players():
-    # TODO: Check number of players
-    return 1
     
 
 def deal_hands(channel_id, deck):
@@ -111,11 +94,6 @@ def prompt_player_pick(hand):
         'actions': actions
     }]
     # post_slack_message(client, attachments, player_user_id, text)
-
-
-# TODO: Get user_id from DB
-def get_user_id():
-    return USER_ID
 
 
 @flask_app.route('/command', methods=['POST'])
