@@ -25,6 +25,7 @@ DECK_COUNTS = {
     'tempura': 14,
     'wasabi': 6,
 }
+DECK_TOTAL_NUM_CARDS = 108
 
 class Deck:
     '''
@@ -39,11 +40,12 @@ class Deck:
     deal_hands(number_of_players)
         Return a list containing the given number of Hands
     '''
+
     def __init__(self):
         self.cards = []
-        self._add_cards(MakiTwo, 12)
-        self._add_cards(MakiThree, 8)
-        self._add_cards(MakiOne, 6)
+        self._add_cards(MakiTwo, DECK_COUNTS['maki_two'])
+        self._add_cards(MakiThree, DECK_COUNTS['maki_three'])
+        self._add_cards(MakiOne, DECK_COUNTS['maki_one'])
         self._add_cards(Tempura, DECK_COUNTS['tempura'])
         self._add_cards(Sashimi, DECK_COUNTS['sashimi'])
         self._add_cards(Dumpling, DECK_COUNTS['dumpling'])
@@ -70,7 +72,7 @@ class Deck:
         hands = []
         for x in range(number_of_players):
             hands.append(Hand())
-        self.shuffle()
+        self._shuffle()
         for x in range(HAND_SIZE[number_of_players]): # 10
             for hand in hands: # 2
                 hand.add_card(self.cards.pop())

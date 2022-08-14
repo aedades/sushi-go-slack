@@ -9,11 +9,11 @@ class TestDeck:
         deck = Deck()
         assert len(deck) == DECK_SIZE
     
-    def test_shuffle_deck(self):
+    def test_shuffle(self):
         deck = Deck()
         top_card = deck.cards[0]
         second_card = deck.cards[1]
-        deck.shuffle()
+        deck._shuffle()
         new_top_card = deck.cards[0]
         new_second_card = deck.cards[1]
         # top card could be a dupe, so check first two cards
