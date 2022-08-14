@@ -1,4 +1,4 @@
-from services.game_worker.sushigo.main import *
+from services.game_worker.game.main import *
 from test.helpers import *
 import inspect
 

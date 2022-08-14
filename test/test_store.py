@@ -1,6 +1,6 @@
 from services.game_worker.store.store import *
 from services.game_worker.store.memory import *
-from services.game_worker.sushigo.deck import Hand
+from services.game_worker.game.deck import Hand
 from test.helpers import *
 import inspect
 import pytest

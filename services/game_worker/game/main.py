@@ -1,5 +1,5 @@
 from config import *
-from services.game_worker.sushigo.deck import *
+from services.game_worker.game.deck import *
 from flask import Flask, request, Response
 
 flask_app = Flask(__name__)

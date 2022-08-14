@@ -1,6 +1,6 @@
 import random
 import uuid
-from services.game_worker.sushigo.cards import *
+from services.game_worker.game.cards import *
 
 HAND_SIZE = {
     1: 10,

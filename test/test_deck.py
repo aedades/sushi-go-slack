@@ -1,5 +1,5 @@
 import pytest
-from services.game_worker.sushigo.deck import *
+from services.game_worker.game.deck import *
 
 DECK_SIZE = 108
 NUMBER_OF_PLAYERS = 2

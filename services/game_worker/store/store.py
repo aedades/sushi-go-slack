@@ -1,6 +1,6 @@
 import uuid
 from abc import ABC, abstractmethod
-from services.game_worker.sushigo.deck import Deck
+from services.game_worker.game.deck import Deck
 
 class Store(ABC):
     '''

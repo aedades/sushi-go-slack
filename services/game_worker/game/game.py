@@ -1,6 +1,6 @@
 from config import *
 from services.game_worker.store.store import *
-from services.game_worker.sushigo.deck import *
+from services.game_worker.game.deck import *
 
 class Game:
     '''

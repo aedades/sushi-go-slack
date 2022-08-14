@@ -1,7 +1,7 @@
 import pytest
-from services.game_worker.sushigo.game import *
+from services.game_worker.game.game import *
 from services.game_worker.store.memory import *
-from services.game_worker.sushigo.deck import *
+from services.game_worker.game.deck import *
 
 # game_state = None
 PLAYER_IDS = ['1', '2', '3']
