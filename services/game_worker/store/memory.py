@@ -1,4 +1,4 @@
-from services.game_worker.store.store import *
+from services.game_worker.store.store import Store
 
 class Memory(Store):
     '''
@@ -46,7 +46,7 @@ class Memory(Store):
         Remove a user by user_id
     '''
 
-    def __init__(self, round_complete=False):
+    def __init__(self):
         self.game_info = {}
         self.hands = {}
         self.users = {}
@@ -71,7 +71,7 @@ class Memory(Store):
             # No hands have been created for this round yet
             return []
 
-    def get_user(self, channel_id, user_id):
+    def get_user_info(self, channel_id, user_id):
         '''Returns the UserInfo stored for the given user'''
         return self.users[channel_id][user_id]
 
@@ -87,7 +87,7 @@ class Memory(Store):
         '''Returns list of scores for the given user'''
         return self.users[channel_id][user_id].scores
 
-    def update_game_info(self, channel_id, game_info):
+    def update_game(self, channel_id, game_info):
         '''Update the stored GameInfo for the current game'''
         self.game_info[channel_id] = game_info
 

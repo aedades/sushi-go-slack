@@ -1,7 +1,8 @@
 import uuid
+from abc import ABC, abstractmethod
 from services.game_worker.sushigo.deck import Deck
 
-class Store:
+class Store(ABC):
     '''
     Store Interface
 
@@ -19,7 +20,7 @@ class Store:
         Returns a list of user_ids in the current game
     get_scores(chennel_id, user_id)
         Returns list of scores for the given user
-    update_game_info(channel_id, game_info)
+    update_game(channel_id, game_info)
         Update the stored GameInfo for the current game
     update_hand(channel_id, hand_id, hand_info)
         Update the stored HandInfo for the given hand
@@ -32,34 +33,44 @@ class Store:
     def __init__(self):
         pass
 
+    @abstractmethod
     def get_game_info(self, channel_id):
         pass
 
+    @abstractmethod
     def get_hand_info(self, channel_id, user_id):
         pass
 
+    @abstractmethod
     def get_hands(self, channel_id):
         pass
 
-    def get_user(self, user_id):
+    @abstractmethod
+    def get_user_info(self, channel_id, user_id):
         pass
 
+    @abstractmethod
     def get_users(self, channel_id):
         pass
 
+    @abstractmethod
     def get_scores(self, channel_id, user_id):
         pass
 
-    def update_game_info(self, channel_id, game_info):
+    @abstractmethod
+    def update_game(self, channel_id, game_info):
         pass
 
-    def update_hand(self, hand_info):
+    @abstractmethod
+    def update_hand(self, channel_id, hand_info):
         pass
 
-    def update_user(self, user_info):
+    @abstractmethod
+    def update_user(self, channel_id, user_info):
         pass
 
-    def remove_user(self, user_id):
+    @abstractmethod
+    def remove_user(self, channel_id, user_id):
         pass
 
 
@@ -101,11 +112,12 @@ class HandInfo:
         Slack channel ID used to distinguish between multiple games
     '''
 
-    def __init__(self, hand_id, channel_id, user_id, hand, chose_card=False):
-        self.hand_id = str(uuid.uuid4())
+    def __init__(self, channel_id, current_user_id, hand, hand_id=str(uuid.uuid4()), chose_card=False):
         self.channel_id = channel_id
+        self.hand = hand
+        self.hand_id = hand_id
         self.chose_card = chose_card
-        self.current_user_id = user_id
+        self.current_user_id = current_user_id
         self.hand = hand
 
 
@@ -123,9 +135,9 @@ class UserInfo:
     scores : list of int
     '''
 
-    def __init__(self, user_id, channel_id, keep_hand_id=str(uuid.uuid4()), passing_hand_id=None, scores=[]):
-        self.user_id = user_id
+    def __init__(self, channel_id, user_id, keep_hand_id=str(uuid.uuid4()), passing_hand_id=None, scores=[]):
         self.channel_id = channel_id
+        self.user_id = user_id
         self.keep_hand_id = keep_hand_id
         self.passing_hand_id = passing_hand_id
         self.scores = scores

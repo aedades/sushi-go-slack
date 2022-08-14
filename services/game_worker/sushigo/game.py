@@ -42,11 +42,11 @@ class Game:
         self.store = store
 
         game_info = GameInfo()
-        self.store.update_game_info(channel_id, game_info)
+        self.store.update_game(channel_id, game_info)
 
     def add_player(self, user_id, channel_id):
         '''Add a player to the current game (until the game is started)'''
-        self.store.update_user(self.channel_id, UserInfo(user_id, channel_id))
+        self.store.update_user(self.channel_id, UserInfo(channel_id, user_id))
 
     def remove_player(self, user_id):
         '''Remove a player from the current game (until the game is started)'''
@@ -74,7 +74,7 @@ class Game:
                 self.store.update_hand(self.channel_id, hand_info)
             # Save game info
             new_game_info = GameInfo(game_info.deck, game_started=True)
-            self.store.update_game_info(self.channel_id, new_game_info)
+            self.store.update_game(self.channel_id, new_game_info)
         else:
             raise NotEnoughPlayersError(len(players))
 
@@ -105,8 +105,8 @@ class Game:
         hands = self.get_hands()
         for i, user_id in enumerate(self.get_players()):
             hand_id = hands[i]
-            hand_info = HandInfo(hand_id, self.channel_id, user_id, self.store.get_hand_info(self.channel_id, hand_id).hand)
-            user_info = UserInfo(user_id, self.channel_id, passing_hand_id=hand_id, scores=self.store.get_scores(self.channel_id, user_id))
+            hand_info = HandInfo(self.channel_id, user_id, self.store.get_hand_info(self.channel_id, hand_id).hand, hand_id)
+            user_info = UserInfo(self.channel_id, user_id, passing_hand_id=hand_id, scores=self.store.get_scores(self.channel_id, user_id))
             self.store.update_user(self.channel_id, user_info)
             self.store.update_hand(self.channel_id, hand_info)
 

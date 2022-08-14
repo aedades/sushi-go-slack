@@ -77,7 +77,7 @@ class TestGame():
 
         self.game_state.start_round()
         for user_id in PLAYER_IDS:
-            user_info = self.game_state.store.get_user(self.game_state.channel_id, user_id)
+            user_info = self.game_state.store.get_user_info(self.game_state.channel_id, user_id)
             assert user_info != None
             assert user_info.keep_hand_id != None
             assert user_info.passing_hand_id != None
