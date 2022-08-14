@@ -1,6 +1,25 @@
 import json
+from store.store import *
 from boto3.dynamodb.conditions import Key, Attr
 from flask import request
+
+class DynamoDB(Store):
+    '''
+    DynamoDB implementation of the Store Interface
+
+    Methods
+    -------
+    get_users(user_id)
+        Returns a list of users in the current game
+    get_hand(hand_id)
+        Returns the unpickled Hand
+    update_user(user_id, user_info)
+        Update the stored UserInfo for the given user
+    update_hand(hand_id, hand_info)
+        Update the stored HandInfo for the given hand
+    '''
+    def __init__(self):
+        pass
 
 # Old code in main
 # Refactor & implement Store interface

@@ -60,6 +60,7 @@ class Card:
         self.emoji = emoji
 
     def get_emoji(self):
+        '''Return the emoji shortcode for the Card'''
         return self.emoji
 
 

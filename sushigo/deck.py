@@ -27,6 +27,18 @@ DECK_COUNTS = {
 }
 
 class Deck:
+    '''
+    Represents the game deck
+
+    Attributes
+    ----------
+    cards : list of Cards
+
+    Methods
+    -------
+    deal_hands(number_of_players)
+        Return a list containing the given number of Hands
+    '''
     def __init__(self):
         self.cards = []
         self._add_cards(MakiTwo, 12)
@@ -41,14 +53,20 @@ class Deck:
         self._add_cards(Wasabi, DECK_COUNTS['wasabi'])
         self._add_cards(Chopsticks, DECK_COUNTS['chopsticks'])
         self._add_cards(Pudding, DECK_COUNTS['pudding'])
-        self.shuffle()
+        self._shuffle()
 
     def _add_cards(self, card, count):
+        '''Add x number of a give Card to the deck'''
         for x in range(count):
             card_obj = card(x)
             self.cards.append(card_obj)
+
+    def _shuffle(self):
+        '''Shuffle the deck'''
+        random.shuffle(self.cards)
     
     def deal_hands(self, number_of_players):
+        '''Return a list containing the given number of Hands'''
         hands = []
         for x in range(number_of_players):
             hands.append(Hand())
@@ -57,9 +75,6 @@ class Deck:
             for hand in hands: # 2
                 hand.add_card(self.cards.pop())
         return hands
-
-    def shuffle(self):
-        random.shuffle(self.cards)
 
     def __len__(self):
         return len(self.cards)
@@ -77,20 +92,47 @@ class Deck:
 
 
 class Hand:
+    '''
+    Represents groups of Cards:
+        1. Hands that are passed between players
+        2. Hands that players keep
+    Cards are removed from (1) and added to (2) over the course of the round
+
+    Attributes
+    ----------
+    cards : dict
+        Key: card_name
+        Value: card
+
+    Methods
+    -------
+    add_card(card)
+        Add a card to the Hand
+    remove_card(card_name)
+        Remove a Card from the hand by name
+    pickle_hand()
+        Pickle the hand for storage
+    update_hand(hand_id, hand_info)
+        Unpickle the hand retrieved from storage
+    '''
     def __init__(self):
         self.cards = {}
 
     def add_card(self, card):
+        '''Add a Card to the hand'''
         self.cards[card.name] = card
 
     def remove_card(self, card_name):
+        '''Remove a Card from the hand by name'''
         return self.cards.pop(card_name)
 
-    def pickle_hand(hand):
-        return pickle.dumps(hand, 0).decode()
+    def pickle_hand(self):
+        '''Pickle the hand for storage'''
+        return pickle.dumps(self, 0).decode()
 
-    def unpickle_hand(hand):
-        return pickle.loads(hand.encode())
+    def unpickle_hand(self):
+        '''Unpickle the hand retrieved from storage'''
+        return pickle.loads(self.encode())
 
     def __len__(self):
         return len(self.cards)

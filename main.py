@@ -81,7 +81,6 @@ def update_home_tab(client, event, logger):
   "block_id": "actions",
   "action_id": "deal_hand"
 })
-
 def test_deal_hand(ack, say, body, logger):
   try:
     ack()
