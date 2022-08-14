@@ -1,3 +1,4 @@
+import uuid
 from sushigo.deck import Deck
 
 class Store:
@@ -8,11 +9,11 @@ class Store:
     -------
     get_game_info(channel_id)
         Returns the GameInfo for the current game
-    get_hand(channel_id, hand_id)
-        Returns the unpickled Hand
+    get_hand_info(channel_id, hand_id)
+        Returns the HandInfo for the given hand ID
     get_hands(channel_id)
         Returns a list of hand_ids in the current game
-    get_user(channel_id, user_id)
+    get_user_info(channel_id, user_id)
         Returns the UserInfo stored for the given user
     get_users(channel_id)
         Returns a list of user_ids in the current game
@@ -34,7 +35,7 @@ class Store:
     def get_game_info(self, channel_id):
         pass
 
-    def get_hand(self, user_id):
+    def get_hand_info(self, channel_id, user_id):
         pass
 
     def get_hands(self, channel_id):
@@ -101,7 +102,7 @@ class HandInfo:
     '''
 
     def __init__(self, hand_id, channel_id, user_id, hand, chose_card=False):
-        self.hand_id = hand_id
+        self.hand_id = str(uuid.uuid4())
         self.channel_id = channel_id
         self.chose_card = chose_card
         self.current_user_id = user_id
@@ -115,13 +116,16 @@ class UserInfo:
     user_id : str
     channel_id : str
         Slack channel ID used to distinguish between multiple games
-    hand_id : str
-        ID of the hand the user currently "holds"
+    keep_hand_id : str
+        ID of the player's hand
+    passing_hand_id : str
+        ID of the passing hand the player currently "holds"
     scores : list of int
     '''
 
-    def __init__(self, user_id, channel_id, hand_id=None, scores=[]):
+    def __init__(self, user_id, channel_id, keep_hand_id=str(uuid.uuid4()), passing_hand_id=None, scores=[]):
         self.user_id = user_id
         self.channel_id = channel_id
-        self.hand_id = hand_id
+        self.keep_hand_id = keep_hand_id
+        self.passing_hand_id = passing_hand_id
         self.scores = scores

@@ -14,6 +14,12 @@ app = App(
     signing_secret=os.environ.get(SLACK_SIGNING_SECRET)
 )
 
+if store_type == 'memory':
+    store = Memory()
+# Fallback to memory store
+else:
+    store = Memory()
+
 # Add functionality here
 # TODO: Add buttons to for various tests:
 # [ ] initialize a game and DM a hand

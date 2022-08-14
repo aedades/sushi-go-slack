@@ -28,7 +28,7 @@ class Memory(Store):
     get_game_info(channel_id)
         Returns the GameInfo for the current game
     get_hand(channel_id, hand_id)
-        Returns the unpickled Hand
+        Returns the HandInfo for the given hand ID
     get_hands(channel_id)
         Returns a list of hand_ids in the current game
     get_user(channel_id, user_id)
@@ -56,8 +56,8 @@ class Memory(Store):
         '''Returns the GameInfo for the current game'''
         return self.game_info[channel_id]
 
-    def get_hand(self, channel_id, hand_id):
-        '''Returns the unpickled Hand'''
+    def get_hand_info(self, channel_id, hand_id):
+        '''Returns the HandInfo for the given hand ID'''
         try:
             return self.hands[channel_id][hand_id]
         except KeyError:

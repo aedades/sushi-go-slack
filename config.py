@@ -29,12 +29,6 @@ logging.basicConfig(level=logging.INFO)
 
 store_type = os.environ.get('STORE_TYPE', 'memory')
 
-if store_type == 'memory':
-    store = Memory()
-# Fallback to memory store
-else:
-    store = Memory()
-
 # Temp hardcoded values
 USER_ID = 'U01H3KAPB71'
 CHANNEL_ID = 'C01HFA41AAZ'

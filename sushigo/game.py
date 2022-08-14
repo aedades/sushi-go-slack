@@ -105,8 +105,8 @@ class Game:
         hands = self.get_hands()
         for i, user_id in enumerate(self.get_players()):
             hand_id = hands[i]
-            hand_info = HandInfo(hand_id, self.channel_id, user_id, self.store.get_hand(self.channel_id, hand_id))
-            user_info = UserInfo(user_id, self.channel_id, hand_id, self.store.get_scores(self.channel_id, user_id))
+            hand_info = HandInfo(hand_id, self.channel_id, user_id, self.store.get_hand_info(self.channel_id, hand_id).hand)
+            user_info = UserInfo(user_id, self.channel_id, passing_hand_id=hand_id, scores=self.store.get_scores(self.channel_id, user_id))
             self.store.update_user(self.channel_id, user_info)
             self.store.update_hand(self.channel_id, hand_info)
 
